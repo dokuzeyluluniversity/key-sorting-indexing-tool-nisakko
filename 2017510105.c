@@ -166,75 +166,7 @@ void createIndexFile(){
     fclose(fp);
 }
 
-int binaryFileSearch(FILE* fp, char* name,int firstIdx,int lastIdx){
-    
-	Index first,last,middle;
-    
-    first.name= malloc(sizeof(char)*(keyEnd-keyStart));
-    last.name= malloc(sizeof(char)*(keyEnd-keyStart));
-    middle.name= malloc(sizeof(char)*(keyEnd-keyStart));
-	int returnData;
-	
-	// Calculate the middle Index
-	int middleIdx = (firstIdx+lastIdx)/2;
-    
-	// Read first record and return if it is the searched one.
-	fseek(fp, firstIdx*(sizeof(Index)), SEEK_SET);
-	fread(&first, sizeof(Index), 1, fp);
-    
-    
-	if(strcmp(first.name,name) == 0)
-	{
-		returnData=first.index;
-		return returnData;
-	}
-	// Read last record and return if it is the searched one.
-	fseek(fp, lastIdx*sizeof(Index), SEEK_SET);
-	fread(&last, sizeof(Index), 1, fp);
-	if(strcmp(last.name,name) == 0)
-	{
-		returnData=last.index;
-		
-		return returnData;
-	}
-	// Recursion exit condition, If middle index is equal to first or last index
-	// required comparisons are already made, so record is not found.
-	// Create and return an empty person.
-	if(middleIdx==firstIdx || middleIdx == lastIdx) {
-		int d=-1;
-		return d;
-	}
 
-	// Read the middle record and return if it is the searched one.
-	fseek(fp, middleIdx*sizeof(Index), SEEK_SET);
-	fread(&middle, sizeof(Index), 1, fp);
-	if(strcmp(middle.name,name) == 0)
-	{
-		returnData=middle.index;
-		return returnData;
-	}
-	// Determine the record position and recursively call with appropriate attributes.
-	if(strcmp(middle.name,name)>0) {
-		return binaryFileSearch(fp, name, firstIdx+1, middleIdx-1);
-	} 
-	else {
-		return binaryFileSearch(fp, name, middleIdx+1, lastIdx-1);
-	}
-}
-int findRecordByName (char *searchName){
-    int lastIdx;
-    int firstIdx=0;
-    
-    FILE* indexFile;
-    indexFile= fopen(indexFileName,"rb");
-    fseek(indexFile,size*sizeof(Index),SEEK_SET);
-    lastIdx = (ftell(indexFile)/sizeof(Index))-1;
-    int result=binaryFileSearch(indexFile,searchName,firstIdx,lastIdx);
-    
-    fclose(indexFile);
-    return result;
-
-}
 void printMenu(int* choice){
     printf("You can perform the following tasks\n");
     printf("(1) Open a Json file(with .json extension) to read parameters\n");
